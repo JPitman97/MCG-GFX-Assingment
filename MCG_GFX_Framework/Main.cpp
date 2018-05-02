@@ -7,7 +7,7 @@ void showSquare(int width, int height, int xOffset, int yOffset);
 void showCircle(int cSize);
 void showFullCircle(int fCSize);
 void showTriangle();
-void showLine(int length);
+void showLine(int x0, int y0, int x1, int y1);
 
 //!!!Global Variables!!!
 const glm::ivec2 windowSize(640, 480);
@@ -23,7 +23,7 @@ int main(int argc, char *argv[])
 	std::cout << "2) Circle (Not filled in)" << std::endl;
 	std::cout << "3) Circle (Filled in)" << std::endl;
 	std::cout << "4) Triangle" << std::endl;
-	std::cout << "5) Line" << std::endl;
+	std::cout << "5) Bresenham's Line" << std::endl;
 
 	int choice;
 	std::cin >> choice;
@@ -65,11 +65,20 @@ int main(int argc, char *argv[])
 		showTriangle();
 		break;
 	case 5:
-		std::cout << "Please enter a line length: ";
-		int l;
-		std::cin >> l;
+		int x0, y0, x1, y1;
+		std::cout << "Enter the First Line X Coordinate: ";
+		std::cin >> x0;
+		std::cout << "Enter the First Line Y Coordinate: ";
+		std::cin >> y0;
+		std::cout << "Enter the Second Line X Coordinate: ";
+		std::cin >> x1;
+		std::cout << "Enter the Second Line Y Coordinate: ";
+		std::cin >> y1;
 		initializeWindow();
-		showLine(l);
+		showLine(x0, y0, x1, y1);
+		break;
+	default:
+		std::cout << "Incorrect choice was made, please restart the program" << std::endl;
 		break;
 	}
 
@@ -240,13 +249,32 @@ void showTriangle()
 	}
 }
 
-void showLine(int length)
+void showLine(int x0, int y0, int x1, int y1)
 {
-	glm::vec2 pixelPosition(centerX.x - (length / 2), centerY.y);
+	glm::vec2 pixelPosition(centerX.x, centerY.y);
 
-	for (int i = 0; i < length; i++)
+	int dx = x1 - x0;
+	int dy = y1 - y0;
+	int d = 2 * dy - dx;
+	int incrE = 2 * dy;
+	int incrNE = 2 * (dy - dx);
+	int x = x0;
+	int y = y0;
+	MCG::DrawPixel(glm::ivec2(x, y), color);
+
+	while (x<x1)
 	{
-		MCG::DrawPixel(pixelPosition, color);
-		pixelPosition.x++;
+		if (d <= 0)
+		{
+			d += incrE;
+			x++;
+		}
+		else
+		{
+			d += incrNE;
+			x++;
+			y++;
+		}
+		MCG::DrawPixel(glm::ivec2(x, y), color);
 	}
 }
