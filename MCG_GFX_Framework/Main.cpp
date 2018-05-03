@@ -3,13 +3,13 @@
 #include <iostream>
 
 void initializeWindow();
-void showSquare(int width, int height, int xOffset, int yOffset);
+void showSquare(int width, int height);
+void showTranslatedSquare(int width, int height, int xOffset, int yOffset);
 void showCircle(int cSize);
 void showFullCircle(int fCSize);
 void showTriangle();
 void showLine(int x0, int y0, int x1, int y1);
-int getPt(int n1, int n2, float perc);
-void drawBezier(int x1, int x2, int x3, int x4, int y1, int y2, int y3, int y4);
+void showfake3D(int width, int height, int xOffset, int yOffset);
 
 //!!!Global Variables!!!
 const glm::ivec2 windowSize(640, 480);
@@ -21,12 +21,13 @@ const glm::ivec3 color2(255, 0, 0);
 int main(int argc, char *argv[])
 {
 	std::cout << "Please choose an option (Please close and re-open to view new choices)" << std::endl;
-	std::cout << "1) Square with Matrix Transformation" << std::endl;
-	std::cout << "2) Circle (Not filled in)" << std::endl;
-	std::cout << "3) Circle (Filled in)" << std::endl;
-	std::cout << "4) Triangle" << std::endl;
-	std::cout << "5) Bresenham's Line" << std::endl;
-	std::cout << "6) Bezier Curve" << std::endl;
+	std::cout << "1) Square" << std::endl;
+	std::cout << "2) Square with Matrix Transformation" << std::endl;
+	std::cout << "3) Circle (Not filled in)" << std::endl;
+	std::cout << "4) Circle (Filled in)" << std::endl;
+	std::cout << "5) Triangle" << std::endl;
+	std::cout << "6) Bresenham's Line" << std::endl;
+	std::cout << "7) Fake 3D Square/Rectangle (Negative translation numbers will cause lines to disappear)" << std::endl;
 
 	int choice;
 	std::cin >> choice;
@@ -40,6 +41,14 @@ int main(int argc, char *argv[])
 		std::cout << "Please enter the height: ";
 		int h;
 		std::cin >> h;
+		initializeWindow();
+		showSquare(w, h);
+		break;
+	case 2:
+		std::cout << "Please enter the width: ";
+		std::cin >> w;
+		std::cout << "Please enter the height: ";
+		std::cin >> h;
 		std::cout << "Please enter the translation X offset (0 spawns the translated square ontop of the standard square, 200 can spawn off screen): ";
 		int x;
 		std::cin >> x;
@@ -47,27 +56,27 @@ int main(int argc, char *argv[])
 		int y;
 		std::cin >> y;
 		initializeWindow();
-		showSquare(w, h, x, y);
+		showTranslatedSquare(w, h, x, y);
 		break;
-	case 2:
+	case 3:
 		std::cout << "Please enter the circle size (Over 225 will be cut off), allow time for the circle to draw: ";
 		int size;
 		std::cin >> size;
 		initializeWindow();
 		showCircle(size);
 		break;
-	case 3:
+	case 4:
 		std::cout << "Please enter the circle size (Over 225 will be cut off), allow time for the circle to draw: ";
 		int fullSize;
 		std::cin >> fullSize;
 		initializeWindow();
 		showFullCircle(fullSize);
 		break;
-	case 4:
+	case 5:
 		initializeWindow();
 		showTriangle();
 		break;
-	case 5:
+	case 6:
 		int x0, y0, x1, y1;
 		std::cout << "Enter the First Line X Coordinate: ";
 		std::cin >> x0;
@@ -80,27 +89,18 @@ int main(int argc, char *argv[])
 		initializeWindow();
 		showLine(x0, y0, x1, y1);
 		break;
-	case 6:
-		int x2, y2, x3, y3, x4, y4;
-		std::cout << "Enter the curves start X Coordinate: ";
-		std::cin >> x1;
-		std::cout << "Enter the curves start Y Coordinate: ";
-		std::cin >> y1;
-		std::cout << "Enter the Second curve X Coordinate: ";
-		std::cin >> x2;
-		std::cout << "Enter the Second curve Y Coordinate: ";
-		std::cin >> y2;
-		std::cout << "Enter the third curve X Coordinate: ";
-		std::cin >> x3;
-		std::cout << "Enter the third curve Y Coordinate: ";
-		std::cin >> y3;
-		std::cout << "Enter the final curve X Coordinate: ";
-		std::cin >> x4;
-		std::cout << "Enter the final curve Y Coordinate: ";
-		std::cin >> y4;
-
+	case 7:
+		std::cout << "Please enter the width: ";
+		std::cin >> w;
+		std::cout << "Please enter the height: ";
+		std::cin >> h;
+		std::cout << "Please enter the translation X offset (0 spawns the translated square ontop of the standard square, 200 can spawn off screen): ";
+		std::cin >> x;
+		std::cout << "Please enter the translation Y offset (0 spawns the translated square ontop of the standard square, 200 can spawn off screen): ";
+		std::cin >> y;
 		initializeWindow();
-		drawBezier(x1, x2, x3, x4, y1, y2, y3, y4);
+		showfake3D(w, h, x, y);
+		break;
 		break;
 	default:
 		std::cout << "Incorrect choice was made, please restart the program" << std::endl;
@@ -168,7 +168,38 @@ void initializeWindow()
 	glm::vec2 centerY(0, windowSize.y / 2);
 }
 
-void showSquare(int width, int height, int xOffset, int yOffset)
+void showSquare(int width, int height)
+{
+	//Rectangle
+	int sideLength = width;
+	int length = height;
+
+
+	glm::vec2 pixelPosition(centerX.x - (length / 2), centerY.y - (sideLength / 2));
+
+	for (int i = 0; i < length; i++)
+	{
+		MCG::DrawPixel(pixelPosition, color);
+		pixelPosition.x++;
+	}
+	for (int i = 0; i < sideLength; i++)
+	{
+		MCG::DrawPixel(pixelPosition, color);
+		pixelPosition.y++;
+	}
+	for (int i = 0; i < length; i++)
+	{
+		MCG::DrawPixel(pixelPosition, color);
+		pixelPosition.x--;
+	}
+	for (int i = 0; i < sideLength; i++)
+	{
+		MCG::DrawPixel(pixelPosition, color);
+		pixelPosition.y--;
+	}
+}
+
+void showTranslatedSquare(int width, int height, int xOffset, int yOffset)
 {
 	//Rectangle
 	int sideLength = width;
@@ -230,21 +261,35 @@ void showSquare(int width, int height, int xOffset, int yOffset)
 void showCircle(int cSize)
 {
 	uint16_t circleSize = cSize;
-	for (int t = 0; t < 50000; t++)
+
+	if (circleSize > 200)
 	{
-		MCG::DrawPixel(glm::ivec2(centerX.x + circleSize * sin(t), centerY.y + circleSize * cos(t)), color);
+		circleSize = 200;
+	}
+
+	for (int i = 0; i < 50000; i++)
+	{
+		MCG::DrawPixel(glm::ivec2(centerX.x + circleSize * sin(i), centerY.y + circleSize * cos(i)), color);
 	}
 }
 
 void showFullCircle(int fCSize)
 {
 	uint16_t fullCircleSize = fCSize;
+
+	glm::ivec3 gradiant(0, 0, 255);
+
+	if (fullCircleSize > 200)
+	{
+		fullCircleSize = 200;
+	}
 	while (fullCircleSize != 0)
 	{
-		for (int t = 0; t < 100000; t++)
+		for (int i = 0; i < 76000; i++)
 		{
-			MCG::DrawPixel(glm::ivec2(centerX.x + fullCircleSize * sin(t), centerY.y + fullCircleSize * cos(t)), color);
+			MCG::DrawPixel(glm::ivec2(centerX.x + fullCircleSize * sin(i), centerY.y + fullCircleSize * cos(i)), gradiant);
 		}
+		gradiant.r++;
 		fullCircleSize--;
 	}
 }
@@ -287,7 +332,7 @@ void showLine(int x0, int y0, int x1, int y1)
 	int y = y0;
 	MCG::DrawPixel(glm::ivec2(x, y), color);
 
-	while (x<x1)
+	while (x < x1)
 	{
 		if (d <= 0)
 		{
@@ -304,37 +349,109 @@ void showLine(int x0, int y0, int x1, int y1)
 	}
 }
 
-int getPt(int n1, int n2, float perc)
+void showfake3D(int width, int height, int xOffset, int yOffset)
 {
-	int diff = n2 - n1;
+	int sideLength = width;
+	int length = height;
 
-	return n1 + (diff * perc);
-}
 
-void drawBezier(int x1, int x2, int x3, int x4, int y1, int y2, int y3, int y4) // Does not work correctly, need to fix!
-{
-	for (float i = 0; i < 1; i += 0.01)
+	glm::ivec2 pixelPosition(centerX.x - (length / 2), centerY.y - (sideLength / 2));
+
+	glm::ivec2 firstPoint = pixelPosition;
+	glm::ivec2 secondPoint;
+	glm::ivec2 thirdPoint;
+	glm::ivec2 fourthPoint;
+
+	for (int i = 0; i < length; i++)
 	{
-		// The Green Lines
-		int xa = getPt(x1, x2, i);
-		int ya = getPt(y1, y2, i);
-		int xb = getPt(x2, x3, i);
-		int yb = getPt(y2, y3, i);
-		int xc = getPt(x3, x4, i);
-		int yc = getPt(y3, y4, i);
-
-		// The Blue Line
-		int xm = getPt(xa, xb, i);
-		int ym = getPt(ya, yb, i);
-		int xn = getPt(xb, xc, i);
-		int yn = getPt(yb, yc, i);
-
-		// The Black Dot
-		int x = getPt(xm, xn, i);
-		int y = getPt(ym, yn, i);
-
-		glm::ivec2 Curve(x, y);
-
-		MCG::DrawPixel(Curve, color);
+		MCG::DrawPixel(pixelPosition, color);
+		pixelPosition.x++;
 	}
+
+	secondPoint = pixelPosition;
+
+	for (int i = 0; i < sideLength; i++)
+	{
+		MCG::DrawPixel(pixelPosition, color);
+		pixelPosition.y++;
+	}
+
+	thirdPoint = pixelPosition;
+
+	for (int i = 0; i < length; i++)
+	{
+		MCG::DrawPixel(pixelPosition, color);
+		pixelPosition.x--;
+	}
+
+	fourthPoint = pixelPosition;
+
+	for (int i = 0; i < sideLength; i++)
+	{
+		MCG::DrawPixel(pixelPosition, color);
+		pixelPosition.y--;
+	}
+
+	//translated
+	glm::mat4 transMatrix = glm::translate(glm::mat4(), glm::vec3((xOffset), (yOffset), 0.0f));
+
+	glm::ivec4 Pos;
+
+	bool line1 = false;
+	bool line2 = false;
+	bool line3 = false;
+	bool line4 = false;
+
+	for (int i = 0; i < length; i++)
+	{
+		Pos = transMatrix * glm::vec4(pixelPosition.x, pixelPosition.y, 0.0f, 1.0f);
+		if (!line1)
+		{
+			showLine(firstPoint.x, firstPoint.y, Pos.x, Pos.y);
+			line1 = true;
+		}
+		MCG::DrawPixel(Pos, color);
+		pixelPosition.x++;
+	}
+
+
+	for (int i = 0; i < sideLength; i++)
+	{
+		Pos = transMatrix * glm::vec4(pixelPosition.x, pixelPosition.y, 0.0f, 1.0f);
+		if (!line2)
+		{
+			showLine(secondPoint.x, secondPoint.y, Pos.x, Pos.y);
+			line2 = true;
+		}
+		MCG::DrawPixel(Pos, color);
+		pixelPosition.y++;
+	}
+
+
+	for (int i = 0; i < length; i++)
+	{
+		Pos = transMatrix * glm::vec4(pixelPosition.x, pixelPosition.y, 0.0f, 1.0f);
+		if (!line3)
+		{
+			showLine(thirdPoint.x, thirdPoint.y, Pos.x, Pos.y);
+			line3 = true;
+		}
+		MCG::DrawPixel(Pos, color);
+		pixelPosition.x--;
+	}
+
+
+	for (int i = 0; i < sideLength; i++)
+	{
+		Pos = transMatrix * glm::vec4(pixelPosition.x, pixelPosition.y, 0.0f, 1.0f);
+		if (!line4)
+		{
+			showLine(fourthPoint.x, fourthPoint.y, Pos.x, Pos.y);
+			line4 = true;
+		}
+		MCG::DrawPixel(Pos, color);
+		pixelPosition.y--;
+	}
+
+
 }
