@@ -8,6 +8,8 @@ void showCircle(int cSize);
 void showFullCircle(int fCSize);
 void showTriangle();
 void showLine(int x0, int y0, int x1, int y1);
+int getPt(int n1, int n2, float perc);
+void drawBezier(int x1, int x2, int x3, int x4, int y1, int y2, int y3, int y4);
 
 //!!!Global Variables!!!
 const glm::ivec2 windowSize(640, 480);
@@ -24,6 +26,7 @@ int main(int argc, char *argv[])
 	std::cout << "3) Circle (Filled in)" << std::endl;
 	std::cout << "4) Triangle" << std::endl;
 	std::cout << "5) Bresenham's Line" << std::endl;
+	std::cout << "6) Bezier Curve" << std::endl;
 
 	int choice;
 	std::cin >> choice;
@@ -76,6 +79,28 @@ int main(int argc, char *argv[])
 		std::cin >> y1;
 		initializeWindow();
 		showLine(x0, y0, x1, y1);
+		break;
+	case 6:
+		int x2, y2, x3, y3, x4, y4;
+		std::cout << "Enter the curves start X Coordinate: ";
+		std::cin >> x1;
+		std::cout << "Enter the curves start Y Coordinate: ";
+		std::cin >> y1;
+		std::cout << "Enter the Second curve X Coordinate: ";
+		std::cin >> x2;
+		std::cout << "Enter the Second curve Y Coordinate: ";
+		std::cin >> y2;
+		std::cout << "Enter the third curve X Coordinate: ";
+		std::cin >> x3;
+		std::cout << "Enter the third curve Y Coordinate: ";
+		std::cin >> y3;
+		std::cout << "Enter the final curve X Coordinate: ";
+		std::cin >> x4;
+		std::cout << "Enter the final curve Y Coordinate: ";
+		std::cin >> y4;
+
+		initializeWindow();
+		drawBezier(x1, x2, x3, x4, y1, y2, y3, y4);
 		break;
 	default:
 		std::cout << "Incorrect choice was made, please restart the program" << std::endl;
@@ -276,5 +301,40 @@ void showLine(int x0, int y0, int x1, int y1)
 			y++;
 		}
 		MCG::DrawPixel(glm::ivec2(x, y), color);
+	}
+}
+
+int getPt(int n1, int n2, float perc)
+{
+	int diff = n2 - n1;
+
+	return n1 + (diff * perc);
+}
+
+void drawBezier(int x1, int x2, int x3, int x4, int y1, int y2, int y3, int y4) // Does not work correctly, need to fix!
+{
+	for (float i = 0; i < 1; i += 0.01)
+	{
+		// The Green Lines
+		int xa = getPt(x1, x2, i);
+		int ya = getPt(y1, y2, i);
+		int xb = getPt(x2, x3, i);
+		int yb = getPt(y2, y3, i);
+		int xc = getPt(x3, x4, i);
+		int yc = getPt(y3, y4, i);
+
+		// The Blue Line
+		int xm = getPt(xa, xb, i);
+		int ym = getPt(ya, yb, i);
+		int xn = getPt(xb, xc, i);
+		int yn = getPt(yb, yc, i);
+
+		// The Black Dot
+		int x = getPt(xm, xn, i);
+		int y = getPt(ym, yn, i);
+
+		glm::ivec2 Curve(x, y);
+
+		MCG::DrawPixel(Curve, color);
 	}
 }
