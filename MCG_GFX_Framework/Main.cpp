@@ -10,6 +10,7 @@ void showFullCircle(int fCSize);
 void showTriangle();
 void showLine(int x0, int y0, int x1, int y1);
 void showfake3D(int width, int height, int xOffset, int yOffset);
+void showBezierCurve(int x0, int y0, int x1, int y1, int x2, int y2, int x3, int y3);
 
 //!!!Global Variables!!!
 const glm::ivec2 windowSize(640, 480);
@@ -28,6 +29,7 @@ int main(int argc, char *argv[])
 	std::cout << "5) Triangle" << std::endl;
 	std::cout << "6) Bresenham's Line" << std::endl;
 	std::cout << "7) Fake 3D Square/Rectangle (Negative translation numbers will cause lines to disappear)" << std::endl;
+	std::cout << "8) Bezier Curve" << std::endl;
 
 	int choice;
 	std::cin >> choice;
@@ -101,6 +103,26 @@ int main(int argc, char *argv[])
 		initializeWindow();
 		showfake3D(w, h, x, y);
 		break;
+	case 8:
+		int x2, y2, x3, y3;
+		std::cout << "Please enter the first X point (try 40): ";
+		std::cin >> x0;
+		std::cout << "Please enter the first Y point (try 100): ";
+		std::cin >> y0;
+		std::cout << "Please enter the second X point (try 80): ";
+		std::cin >> x1;
+		std::cout << "Please enter the second Y point (try 20): ";
+		std::cin >> y1;
+		std::cout << "Please enter the third X point (try 150): ";
+		std::cin >> x2;
+		std::cout << "Please enter the third Y point (try 180): ";
+		std::cin >> y2;
+		std::cout << "Please enter the final X point (try 260): ";
+		std::cin >> x3;
+		std::cout << "Please enter the final Y point (try 100): ";
+		std::cin >> y3;
+		initializeWindow();
+		showBezierCurve(x0, y0, x1, y1, x2, y2, x3, y3);
 		break;
 	default:
 		std::cout << "Incorrect choice was made, please restart the program" << std::endl;
@@ -136,7 +158,7 @@ int main(int argc, char *argv[])
 	return 0;
 }
 
-void initializeWindow()
+void initializeWindow() // This code creates and sets values for the window
 {
 	// Variable for storing window dimensions
 	glm::ivec2 windowSize(640, 480);
@@ -166,9 +188,9 @@ void initializeWindow()
 	// Set center positions for x and y
 	glm::vec2 centerX(windowSize.x / 2, 0);
 	glm::vec2 centerY(0, windowSize.y / 2);
-}
+} 
 
-void showSquare(int width, int height)
+void showSquare(int width, int height) //This code creates a square in the center of the screen to the users width and height
 {
 	//Rectangle
 	int sideLength = width;
@@ -197,9 +219,9 @@ void showSquare(int width, int height)
 		MCG::DrawPixel(pixelPosition, color);
 		pixelPosition.y--;
 	}
-}
+} 
 
-void showTranslatedSquare(int width, int height, int xOffset, int yOffset)
+void showTranslatedSquare(int width, int height, int xOffset, int yOffset) //This code does the same as above however this time it also translates the square using a matrix translation
 {
 	//Rectangle
 	int sideLength = width;
@@ -258,7 +280,7 @@ void showTranslatedSquare(int width, int height, int xOffset, int yOffset)
 	}
 }
 
-void showCircle(int cSize)
+void showCircle(int cSize) //This method creates a circle that is not filled in
 {
 	uint16_t circleSize = cSize;
 
@@ -273,7 +295,7 @@ void showCircle(int cSize)
 	}
 }
 
-void showFullCircle(int fCSize)
+void showFullCircle(int fCSize) //This method creates a circle that is filled in with a gradiant color going from blue to red
 {
 	uint16_t fullCircleSize = fCSize;
 
@@ -294,7 +316,7 @@ void showFullCircle(int fCSize)
 	}
 }
 
-void showTriangle()
+void showTriangle() //This method creates a simple triangle in the center of the screen
 {
 	uint16_t triangleSize = 300;
 	glm::ivec2 pixelPosition(centerX.x - (triangleSize / 2), centerY.y + ((triangleSize / 2) / 2));
@@ -319,7 +341,7 @@ void showTriangle()
 	}
 }
 
-void showLine(int x0, int y0, int x1, int y1)
+void showLine(int x0, int y0, int x1, int y1) //This code uses the Bresenham line algorithm (Sourced from https://www.thecrazyprogrammer.com/2017/01/bresenhams-line-drawing-algorithm-c-c.html) to draw a line between two points the user chooses, I did not write this code, only impemented it
 {
 	glm::vec2 pixelPosition(centerX.x, centerY.y);
 
@@ -349,7 +371,7 @@ void showLine(int x0, int y0, int x1, int y1)
 	}
 }
 
-void showfake3D(int width, int height, int xOffset, int yOffset)
+void showfake3D(int width, int height, int xOffset, int yOffset) //This code is my own except for the use of the showLine() method which uses the Bresenhams line algorithm 
 {
 	int sideLength = width;
 	int length = height;
@@ -452,6 +474,17 @@ void showfake3D(int width, int height, int xOffset, int yOffset)
 		MCG::DrawPixel(Pos, color);
 		pixelPosition.y--;
 	}
-
-
 }
+
+void showBezierCurve(int x0, int y0, int x1, int y1, int x2, int y2, int x3, int y3) //This code was originally sourced from "https://darshangajara.com/2014/02/11/bezier-curve-algorithm/" and I have modified it to fit the MCG API
+{
+	int px, py;
+
+	double t;
+	for (t = 0.0; t <= 1.0; t += 0.001) {
+		px = (1 - t)*(1 - t)*(1 - t)*x0 + 3 * t*(1 - t)*(1 - t)*x1 + 3 * t*t*(1 - t)*x2 + t * t*t*x3;
+		py = (1 - t)*(1 - t)*(1 - t)*y0 + 3 * t*(1 - t)*(1 - t)*y1 + 3 * t*t*(1 - t)*y2 + t * t*t*y3;
+		glm::ivec2 Curve(px, py);
+		MCG::DrawPixel(Curve, color);
+	}
+} 
