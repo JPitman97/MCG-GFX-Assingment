@@ -1,0 +1,1 @@
+Run the executable within Release and follow the on screen prompts

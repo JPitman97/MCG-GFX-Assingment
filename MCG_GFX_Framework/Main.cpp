@@ -3,21 +3,21 @@
 #include <iostream>
 
 void initializeWindow();
-void showSquare(int width, int height);
-void showTranslatedSquare(int width, int height, int xOffset, int yOffset);
-void showCircle(int cSize);
-void showFullCircle(int fCSize);
+void showSquare(int _width, int _height);
+void showTranslatedSquare(int _width, int _height, int _xOffset, int _yOffset);
+void showCircle(int _cSize);
+void showFullCircle(int _fCSize);
 void showTriangle();
-void showLine(int x0, int y0, int x1, int y1);
-void showfake3D(int width, int height, int xOffset, int yOffset);
-void showBezierCurve(int x0, int y0, int x1, int y1, int x2, int y2, int x3, int y3);
+void showLine(int _x0, int _y0, int _x1, int _y1);
+void showfake3D(int _width, int _height, int _xOffset, int _yOffset);
+void showBezierCurve(int _x0, int _y0, int _x1, int _y1, int _x2, int _y2, int _x3, int _y3);
 
 //!!!Global Variables!!!
-const glm::ivec2 windowSize(640, 480);
-const glm::vec2 centerX(windowSize.x / 2, 0);
-const glm::vec2 centerY(0, windowSize.y / 2);
-const glm::ivec3 color(0, 0, 255);
-const glm::ivec3 color2(255, 0, 0);
+const glm::ivec2 g_windowSize(640, 480);
+const glm::vec2 g_centerX(g_windowSize.x / 2, 0);
+const glm::vec2 g_centerY(0, g_windowSize.y / 2);
+const glm::ivec3 g_color(0, 0, 255);
+const glm::ivec3 g_color2(255, 0, 0);
 
 int main(int argc, char *argv[])
 {
@@ -190,99 +190,99 @@ void initializeWindow() // This code creates and sets values for the window
 	glm::vec2 centerY(0, windowSize.y / 2);
 } 
 
-void showSquare(int width, int height) //This code creates a square in the center of the screen to the users width and height
+void showSquare(int _width, int _height) //This code creates a square in the center of the screen to the users width and height
 {
 	//Rectangle
-	int sideLength = width;
-	int length = height;
+	int sideLength = _width;
+	int length = _height;
 
 
-	glm::vec2 pixelPosition(centerX.x - (length / 2), centerY.y - (sideLength / 2));
+	glm::vec2 pixelPosition(g_centerX.x - (length / 2), g_centerY.y - (sideLength / 2));
 
 	for (int i = 0; i < length; i++)
 	{
-		MCG::DrawPixel(pixelPosition, color);
+		MCG::DrawPixel(pixelPosition, g_color);
 		pixelPosition.x++;
 	}
 	for (int i = 0; i < sideLength; i++)
 	{
-		MCG::DrawPixel(pixelPosition, color);
+		MCG::DrawPixel(pixelPosition, g_color);
 		pixelPosition.y++;
 	}
 	for (int i = 0; i < length; i++)
 	{
-		MCG::DrawPixel(pixelPosition, color);
+		MCG::DrawPixel(pixelPosition, g_color);
 		pixelPosition.x--;
 	}
 	for (int i = 0; i < sideLength; i++)
 	{
-		MCG::DrawPixel(pixelPosition, color);
+		MCG::DrawPixel(pixelPosition, g_color);
 		pixelPosition.y--;
 	}
 } 
 
-void showTranslatedSquare(int width, int height, int xOffset, int yOffset) //This code does the same as above however this time it also translates the square using a matrix translation
+void showTranslatedSquare(int _width, int _height, int _xOffset, int _yOffset) //This code does the same as above however this time it also translates the square using a matrix translation
 {
 	//Rectangle
-	int sideLength = width;
-	int length = height;
+	int sideLength = _width;
+	int length = _height;
 
 
-	glm::vec2 pixelPosition(centerX.x - (length / 2), centerY.y - (sideLength / 2));
+	glm::vec2 pixelPosition(g_centerX.x - (length / 2), g_centerY.y - (sideLength / 2));
 
 	for (int i = 0; i < length; i++)
 	{
-		MCG::DrawPixel(pixelPosition, color);
+		MCG::DrawPixel(pixelPosition, g_color);
 		pixelPosition.x++;
 	}
 	for (int i = 0; i < sideLength; i++)
 	{
-		MCG::DrawPixel(pixelPosition, color);
+		MCG::DrawPixel(pixelPosition, g_color);
 		pixelPosition.y++;
 	}
 	for (int i = 0; i < length; i++)
 	{
-		MCG::DrawPixel(pixelPosition, color);
+		MCG::DrawPixel(pixelPosition, g_color);
 		pixelPosition.x--;
 	}
 	for (int i = 0; i < sideLength; i++)
 	{
-		MCG::DrawPixel(pixelPosition, color);
+		MCG::DrawPixel(pixelPosition, g_color);
 		pixelPosition.y--;
 	}
 
 	//translated
-	glm::mat4 transMatrix = glm::translate(glm::mat4(), glm::vec3((xOffset), (yOffset), 0.0f));
+	glm::mat4 transMatrix = glm::translate(glm::mat4(), glm::vec3((_xOffset), (_yOffset), 0.0f));
 
 	for (int i = 0; i < length; i++)
 	{
 		glm::vec4 Pos = transMatrix * glm::vec4(pixelPosition.x, pixelPosition.y, 0.0f, 1.0f);
-		MCG::DrawPixel(Pos, color2);
+		MCG::DrawPixel(Pos, g_color2);
 		pixelPosition.x++;
 	}
 	for (int i = 0; i < sideLength; i++)
 	{
 		glm::vec4 Pos = transMatrix * glm::vec4(pixelPosition.x, pixelPosition.y, 0.0f, 1.0f);
-		MCG::DrawPixel(Pos, color2);
+		MCG::DrawPixel(Pos, g_color2);
 		pixelPosition.y++;
 	}
 	for (int i = 0; i < length; i++)
 	{
 		glm::vec4 Pos = transMatrix * glm::vec4(pixelPosition.x, pixelPosition.y, 0.0f, 1.0f);
-		MCG::DrawPixel(Pos, color2);
+		MCG::DrawPixel(Pos, g_color2);
 		pixelPosition.x--;
 	}
 	for (int i = 0; i < sideLength; i++)
 	{
 		glm::vec4 Pos = transMatrix * glm::vec4(pixelPosition.x, pixelPosition.y, 0.0f, 1.0f);
-		MCG::DrawPixel(Pos, color2);
+		MCG::DrawPixel(Pos, g_color2);
 		pixelPosition.y--;
 	}
 }
 
-void showCircle(int cSize) //This method creates a circle that is not filled in
+void showCircle(int _cSize) //This method creates a circle that is not filled in
 {
-	uint16_t circleSize = cSize;
+	uint16_t circleSize = _cSize;
 
 	if (circleSize > 200)
 	{
@@ -291,13 +291,13 @@ void showCircle(int cSize) //This method creates a circle that is not filled in
 
 	for (int i = 0; i < 50000; i++)
 	{
-		MCG::DrawPixel(glm::ivec2(centerX.x + circleSize * sin(i), centerY.y + circleSize * cos(i)), color);
+		MCG::DrawPixel(glm::ivec2(g_centerX.x + circleSize * sin(i), g_centerY.y + circleSize * cos(i)), g_color);
 	}
 }
 
-void showFullCircle(int fCSize) //This method creates a circle that is filled in with a gradiant color going from blue to red
+void showFullCircle(int _fCSize) //This method creates a circle that is filled in with a gradiant color going from blue to red
 {
-	uint16_t fullCircleSize = fCSize;
+	uint16_t fullCircleSize = _fCSize;
 
 	glm::ivec3 gradiant(0, 0, 255);
 
@@ -309,7 +309,7 @@ void showFullCircle(int fCSize) //This method creates a circle that is filled in
 	{
 		for (int i = 0; i < 76000; i++)
 		{
-			MCG::DrawPixel(glm::ivec2(centerX.x + fullCircleSize * sin(i), centerY.y + fullCircleSize * cos(i)), gradiant);
+			MCG::DrawPixel(glm::ivec2(g_centerX.x + fullCircleSize * sin(i), g_centerY.y + fullCircleSize * cos(i)), gradiant);
 		}
 		gradiant.r++;
 		fullCircleSize--;
@@ -319,42 +319,42 @@ void showFullCircle(int fCSize) //This method creates a circle that is filled in
 void showTriangle() //This method creates a simple triangle in the center of the screen
 {
 	uint16_t triangleSize = 300;
-	glm::ivec2 pixelPosition(centerX.x - (triangleSize / 2), centerY.y + ((triangleSize / 2) / 2));
+	glm::ivec2 pixelPosition(g_centerX.x - (triangleSize / 2), g_centerY.y + ((triangleSize / 2) / 2));
 	glm::ivec2 origPoint = pixelPosition;
 
 	for (int i = 0; i < triangleSize; i++) //Straight line
 	{
-		MCG::DrawPixel(pixelPosition, color);
+		MCG::DrawPixel(pixelPosition, g_color);
 		pixelPosition.x++;
 	}
 	for (int i = 0; i < triangleSize / 2; i++) //First angled line
 	{
-		MCG::DrawPixel(pixelPosition, color);
+		MCG::DrawPixel(pixelPosition, g_color);
 		pixelPosition--;
 	}
 	pixelPosition = origPoint;
 	for (int i = 0; i < (triangleSize / 2) + 1; i++) // second angled line
 	{
-		MCG::DrawPixel(pixelPosition, color);
+		MCG::DrawPixel(pixelPosition, g_color);
 		pixelPosition.y--;
 		pixelPosition.x++;
 	}
 }
 
-void showLine(int x0, int y0, int x1, int y1) //This code uses the Bresenham line algorithm (Sourced from https://www.thecrazyprogrammer.com/2017/01/bresenhams-line-drawing-algorithm-c-c.html) to draw a line between two points the user chooses, I did not write this code, only impemented it
+void showLine(int _x0, int _y0, int _x1, int _y1) //This code uses the Bresenham line algorithm (Sourced from https://www.thecrazyprogrammer.com/2017/01/bresenhams-line-drawing-algorithm-c-c.html) to draw a line between two points the user chooses, I did not write this code, only impemented it
 {
-	glm::vec2 pixelPosition(centerX.x, centerY.y);
+	glm::vec2 pixelPosition(g_centerX.x, g_centerY.y);
 
-	int dx = x1 - x0;
-	int dy = y1 - y0;
+	int dx = _x1 - _x0;
+	int dy = _y1 - _y0;
 	int d = 2 * dy - dx;
 	int incrE = 2 * dy;
 	int incrNE = 2 * (dy - dx);
-	int x = x0;
-	int y = y0;
-	MCG::DrawPixel(glm::ivec2(x, y), color);
+	int x = _x0;
+	int y = _y0;
+	MCG::DrawPixel(glm::ivec2(x, y), g_color);
 
-	while (x < x1)
+	while (x < _x1)
 	{
 		if (d <= 0)
 		{
@@ -367,17 +367,17 @@ void showLine(int x0, int y0, int x1, int y1) //This code uses the Bresenham lin
 			x++;
 			y++;
 		}
-		MCG::DrawPixel(glm::ivec2(x, y), color);
+		MCG::DrawPixel(glm::ivec2(x, y), g_color);
 	}
 }
 
-void showfake3D(int width, int height, int xOffset, int yOffset) //This code is my own except for the use of the showLine() method which uses the Bresenhams line algorithm 
+void showfake3D(int _width, int _height, int _xOffset, int _yOffset) //This code is my own except for the use of the showLine() method which uses the Bresenhams line algorithm 
 {
-	int sideLength = width;
-	int length = height;
+	int sideLength = _width;
+	int length = _height;
 
 
-	glm::ivec2 pixelPosition(centerX.x - (length / 2), centerY.y - (sideLength / 2));
+	glm::ivec2 pixelPosition(g_centerX.x - (length / 2), g_centerY.y - (sideLength / 2));
 
 	glm::ivec2 firstPoint = pixelPosition;
 	glm::ivec2 secondPoint;
@@ -386,7 +386,7 @@ void showfake3D(int width, int height, int xOffset, int yOffset) //This code is 
 
 	for (int i = 0; i < length; i++)
 	{
-		MCG::DrawPixel(pixelPosition, color);
+		MCG::DrawPixel(pixelPosition, g_color);
 		pixelPosition.x++;
 	}
 
@@ -394,7 +394,7 @@ void showfake3D(int width, int height, int xOffset, int yOffset) //This code is 
 
 	for (int i = 0; i < sideLength; i++)
 	{
-		MCG::DrawPixel(pixelPosition, color);
+		MCG::DrawPixel(pixelPosition, g_color);
 		pixelPosition.y++;
 	}
 
@@ -402,7 +402,7 @@ void showfake3D(int width, int height, int xOffset, int yOffset) //This code is 
 
 	for (int i = 0; i < length; i++)
 	{
-		MCG::DrawPixel(pixelPosition, color);
+		MCG::DrawPixel(pixelPosition, g_color);
 		pixelPosition.x--;
 	}
 
@@ -410,12 +410,12 @@ void showfake3D(int width, int height, int xOffset, int yOffset) //This code is 
 
 	for (int i = 0; i < sideLength; i++)
 	{
-		MCG::DrawPixel(pixelPosition, color);
+		MCG::DrawPixel(pixelPosition, g_color);
 		pixelPosition.y--;
 	}
 
 	//translated
-	glm::mat4 transMatrix = glm::translate(glm::mat4(), glm::vec3((xOffset), (yOffset), 0.0f));
+	glm::mat4 transMatrix = glm::translate(glm::mat4(), glm::vec3((_xOffset), (_yOffset), 0.0f));
 
 	glm::ivec4 Pos;
 
@@ -432,7 +432,7 @@ void showfake3D(int width, int height, int xOffset, int yOffset) //This code is 
 			showLine(firstPoint.x, firstPoint.y, Pos.x, Pos.y);
 			line1 = true;
 		}
-		MCG::DrawPixel(Pos, color);
+		MCG::DrawPixel(Pos, g_color);
 		pixelPosition.x++;
 	}
 
@@ -445,7 +445,7 @@ void showfake3D(int width, int height, int xOffset, int yOffset) //This code is 
 			showLine(secondPoint.x, secondPoint.y, Pos.x, Pos.y);
 			line2 = true;
 		}
-		MCG::DrawPixel(Pos, color);
+		MCG::DrawPixel(Pos, g_color);
 		pixelPosition.y++;
 	}
 
@@ -458,7 +458,7 @@ void showfake3D(int width, int height, int xOffset, int yOffset) //This code is 
 			showLine(thirdPoint.x, thirdPoint.y, Pos.x, Pos.y);
 			line3 = true;
 		}
-		MCG::DrawPixel(Pos, color);
+		MCG::DrawPixel(Pos, g_color);
 		pixelPosition.x--;
 	}
 
@@ -471,20 +471,20 @@ void showfake3D(int width, int height, int xOffset, int yOffset) //This code is 
 			showLine(fourthPoint.x, fourthPoint.y, Pos.x, Pos.y);
 			line4 = true;
 		}
-		MCG::DrawPixel(Pos, color);
+		MCG::DrawPixel(Pos, g_color);
 		pixelPosition.y--;
 	}
 }
 
-void showBezierCurve(int x0, int y0, int x1, int y1, int x2, int y2, int x3, int y3) //This code was originally sourced from "https://darshangajara.com/2014/02/11/bezier-curve-algorithm/" and I have modified it to fit the MCG API
+void showBezierCurve(int _x0, int _y0, int _x1, int _y1, int _x2, int _y2, int _x3, int _y3) //This code was originally sourced from "https://darshangajara.com/2014/02/11/bezier-curve-algorithm/" and I have modified it to fit the MCG API
 {
 	int px, py;
 
 	double t;
 	for (t = 0.0; t <= 1.0; t += 0.001) {
-		px = (1 - t)*(1 - t)*(1 - t)*x0 + 3 * t*(1 - t)*(1 - t)*x1 + 3 * t*t*(1 - t)*x2 + t * t*t*x3;
-		py = (1 - t)*(1 - t)*(1 - t)*y0 + 3 * t*(1 - t)*(1 - t)*y1 + 3 * t*t*(1 - t)*y2 + t * t*t*y3;
+		px = (1 - t)*(1 - t)*(1 - t)*_x0 + 3 * t*(1 - t)*(1 - t)*_x1 + 3 * t*t*(1 - t)*_x2 + t * t*t*_x3;
+		py = (1 - t)*(1 - t)*(1 - t)*_y0 + 3 * t*(1 - t)*(1 - t)*_y1 + 3 * t*t*(1 - t)*_y2 + t * t*t*_y3;
 		glm::ivec2 Curve(px, py);
-		MCG::DrawPixel(Curve, color);
+		MCG::DrawPixel(Curve, g_color);
 	}
 } 
